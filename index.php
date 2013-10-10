@@ -1,20 +1,26 @@
 <?php
-include('config.php');
-if (is_readable(DATA_DIR.ASSOC_NAME))
+require('config.php');
+if (is_readable(DATA_FILE))
 {
-    $rawData = file_get_contents(DATA_DIR.ASSOC_NAME);
-    $data = unserialize($rawData);
+    $data = unserialize(gzinflate(file_get_contents(DATA_FILE)));
 }
 else
     $data = array();
 
 // If we don't have exactly one $_GET arg, we print a default page
 if (count($_GET) != 1) {
-    if (isset($_GET['add']) && !empty($_GET['url'])) {
+    if (!empty($_POST['url']) || (isset($_GET['add']) && !empty($_GET['url']))) {
         $default_url = htmlspecialchars($_GET['url']);
     }
     else {
-        $default_url = "";
+        $default_url = '';
+    }
+
+    if (!empty($_POST['short'])) {
+        $default_short = htmlspecialchars($_GET['short']);
+    }
+    else {
+        $default_short = '';
     }
 ?>
     <!DOCTYPE html>
@@ -31,11 +37,11 @@ if (count($_GET) != 1) {
                     <label for="url">URL: </label><input type="text" size="50" name="url" id="url" value="<?php echo $default_url; ?>"/>
                 </p>
                 <p>
-                    <label for="short">Shortcut (optional): </label><input type="short" size="50" name="short" id="short"/>
+                    <label for="short">Shortcut (optional): </label><input type="short" size="50" name="short" id="short" value="<?php echo $default_short;?>"/>
                 </p>
                 <p><input type="submit" value="Shorten !"/></p>
                 <p>Add this link to your bookmarks to shorten links in one click ! 
-                    <a href="javascript:javascript:(function(){var%20url%20=%20location.href;var%20title%20=%20document.title%20||%20url;window.open('<?php echo BASE_URL; ?>/?add&url='%20+%20encodeURIComponent(url),'_blank','menubar=no,height=390,width=600,toolbar=no,scrollbars=no,status=no,dialog=1');})();">Réduis moi !</a>
+                    <a href="javascript:javascript:(function(){var%20url%20=%20location.href;var%20title%20=%20document.title%20||%20url;window.open('<?php echo BASE_URL; ?>/?add&url='%20+%20encodeURIComponent(url),'_blank','menubar=no,height=390,width=600,toolbar=no,scrollbars=no,status=no,dialog=1');})();">Short link</a>
                 </p>
             </form>
         </body>
@@ -45,6 +51,7 @@ if (count($_GET) != 1) {
 // Else, we redirect the visitor to the right URL
 else {
     // We get the shortened url
+    // TODO
     $get = each($_GET);
     $short = $get['key'];
     $url = BASE_URL;

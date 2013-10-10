@@ -1,10 +1,9 @@
 <?php
-include('config.php');
+require('config.php');
 // Add a new line to $data
 function add($that) {
-    global $_CONFIG;
     global $data;
-    if (count($data) >= SAVED_URL)
+    if (count($data) >= MAX_SAVED_URLS)
     {
         // Delete the first element
         array_shift($data);
@@ -15,20 +14,15 @@ function add($that) {
 }
 
 if(empty($_POST['url'])) {
-    header('location : message.php?m=1');
+    header('location : index.php');
 }
 else {
-    if (is_readable(DATA_DIR.ASSOC_NAME))
-        $rawData = file_get_contents(DATA_DIR.ASSOC_NAME);
-    else
-    {
-        touch(DATA_DIR.ASSOC_DIR);
-        $rawData = "";
+    if (is_readable(DATA_FILE)) {
+        $data = unserialize(gzinflate(file_get_contents(DATA_DIR.ASSOC_NAME)));
     }
-    if (empty($rawData))
-        $data = array();
-    else
-        $data = unserialize($rawData);
+    else {
+        $data = array(); 
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -41,7 +35,6 @@ else {
     <body>
         <h1>It was too long !</h1>
 <?php
-
 if (isset($_POST['short']) && $_POST['short'] != "") {
     $short = htmlspecialchars($_POST['short']);
 }
@@ -54,7 +47,7 @@ if (isset($_POST['url']) && $_POST['url'] != "") {
     // Add the association at the end of $data array
     $data = add($array);
     // Save it in the file
-    file_put_contents(DATA_DIR.ASSOC_NAME, serialize($data));
+    file_put_contents(DATA_FILE, gzdeflate(serialize($data)));
     // Echoes the result
     $new_url = $BASE_URL.'/?'.$short;
 ?>
