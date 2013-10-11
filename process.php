@@ -1,16 +1,15 @@
 <?php
 require('config.php');
-// Add a new line to $data
-function add($that) {
-    global $data;
-    if (count($data) >= MAX_SAVED_URLS)
-    {
-        // Delete the first element
-        array_shift($data);
+
+function sort_array(&$array, $key, $order=SORT_DESC) {
+    $sort_keys = array();
+
+    foreach ($array as $key2 => $entry) {
+        $sort_keys[$key2] = $entry[$key];
     }
-    // Add that to the array
-    array_push($data, $that);
-    return $data;
+
+
+    return array_multisort($sort_keys, $order, $array);
 }
 
 if(empty($_POST['url'])) {
@@ -18,7 +17,7 @@ if(empty($_POST['url'])) {
 }
 else {
     if (is_readable(DATA_FILE)) {
-        $data = unserialize(gzinflate(file_get_contents(DATA_DIR.ASSOC_NAME)));
+        $data = unserialize(gzinflate(file_get_contents(DATA_FILE)));
     }
     else {
         $data = array(); 
@@ -29,7 +28,7 @@ else {
 <html lang="fr">
     <head>
         <meta charset="utf-8">
-        <title>Shorten me !<title>
+        <title>Shorten me !</title>
         <link rel="stylesheet" media="screen" type="text/css" href="design.css" />
     </head>
     <body>
@@ -44,17 +43,27 @@ else {
 if (isset($_POST['url']) && $_POST['url'] != "") {
     $url = htmlspecialchars($_POST['url']);
     $array = array("url"=>$url, "short"=>$short);
-    // Add the association at the end of $data array
-    $data = add($array);
+
+    if (count($data) >= MAX_SAVED_URLS)
+    {
+        // Delete the first element
+        sort_array($data, 'timestamp');
+        array_shift($data);
+    }
+
+    // Store short link in the data array
+    $data[$short] = array('timestamp'=>time(), 'url'=>$url);
+
     // Save it in the file
     file_put_contents(DATA_FILE, gzdeflate(serialize($data)));
+
     // Echoes the result
-    $new_url = $BASE_URL.'/?'.$short;
+    $new_url = BASE_URL.'/?'.$short;
 ?>
                     <p>Your shorten URL:<br/>
                         <strong><a href="<?php echo $new_url ?>"><?php echo $new_url; ?></a></strong>
                     </p>
-                    <p>Short link for:<?php echo '<a href="'.$url.'">'.$url.'</a>'; ?></p>
+                    <p>Short link for: <?php echo '<a href="'.$url.'">'.$url.'</a>'; ?></p>
 <?php
 }
 else {

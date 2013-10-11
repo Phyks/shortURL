@@ -1,5 +1,6 @@
 <?php
 require('config.php');
+
 if (is_readable(DATA_FILE))
 {
     $data = unserialize(gzinflate(file_get_contents(DATA_FILE)));
@@ -51,15 +52,11 @@ if (count($_GET) != 1) {
 // Else, we redirect the visitor to the right URL
 else {
     // We get the shortened url
-    // TODO
     $get = each($_GET);
     $short = $get['key'];
     $url = BASE_URL;
-    foreach($data as $array) {
-        if ($array['short'] == $short) {
-            $url = $array['url'];
-            break;
-        }
+    if (array_key_exists($short, $data)) {
+        $url = $data[$short]['url'];
     }
     // $url is now index.php if no element was found, the right url if found
     header('location:'.$url);
