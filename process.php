@@ -29,10 +29,20 @@ else {
     <head>
         <meta charset="utf-8">
         <title>Shorten me !</title>
-        <link rel="stylesheet" media="screen" type="text/css" href="design.css" />
+        <style type="text/css">
+            body {
+                text-align: center;
+                background-color: #333;
+                color: #DDD;
+            }
+
+            a:link, a:visited, a:hover, a:active {
+                color: yellow;
+            }
+        </style>
     </head>
     <body>
-        <h1>It was too long !</h1>
+        <h1><a href="index.php">It was too long !</a></h1>
 <?php
 if (isset($_POST['short']) && $_POST['short'] != "") {
     $short = htmlspecialchars($_POST['short']);

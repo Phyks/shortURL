@@ -29,10 +29,24 @@ if (count($_GET) != 1) {
         <head>
             <meta charset="utf-8">
             <title>Shorten me</title>
-            <link rel="stylesheet" media="screen" type="text/css" href="design.css" />
+            <style type="text/css">
+                body {
+                    text-align: center;
+                    background-color: #333;
+                    color: #DDD;
+                }
+
+                a:link, a:visited, a:hover, a:active {
+                    color: yellow;
+                }
+
+                label {
+                    display: block;
+                }
+            </style>
         </head>
         <body>
-            <h1>It's too long…</h1>
+            <h1><a href="index.php">It's too long…</a></h1>
             <form method="post" action="process.php">
                 <p>
                     <label for="url">URL: </label><input type="text" size="50" name="url" id="url" value="<?php echo $default_url; ?>"/>
@@ -42,7 +56,7 @@ if (count($_GET) != 1) {
                 </p>
                 <p><input type="submit" value="Shorten !"/></p>
                 <p>Add this link to your bookmarks to shorten links in one click ! 
-                    <a href="javascript:javascript:(function(){var%20url%20=%20location.href;var%20title%20=%20document.title%20||%20url;window.open('<?php echo BASE_URL; ?>/?add&url='%20+%20encodeURIComponent(url),'_blank','menubar=no,height=390,width=600,toolbar=no,scrollbars=no,status=no,dialog=1');})();">Short link</a>
+                    <a href="javascript:javascript:(function(){var%20url%20=%20location.href;var%20title%20=%20document.title%20||%20url;window.open('<?php echo BASE_URL; ?>/?add&amp;url='%20+%20encodeURIComponent(url),'_blank','menubar=no,height=390,width=600,toolbar=no,scrollbars=no,status=no,dialog=1');})();">Short link</a>
                 </p>
             </form>
         </body>
