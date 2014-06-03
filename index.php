@@ -93,7 +93,7 @@ if(!empty($_POST['url'])) {
     // Echoes the result
     $new_url = BASE_URL.'/?'.$short;
 ?>
-                <p>Your shorten URL:<br/>
+                <p>Your shortened URL:<br/>
                     <strong><a href="<?php echo $new_url ?>"><?php echo $new_url; ?></a></strong>
                 </p>
                 <p>Short link for: <?php echo '<a href="'.$url.'">'.$url.'</a>'; ?></p>
