@@ -37,10 +37,13 @@ if (count($_GET) == 1) {
     if (array_key_exists($short, $data)) {
         $url = $data[$short]['url'];
     }
-    // $url is now index.php if no element was found, the right url if found
-    header('location:'.$url);
-    exit();
+    if ($url != BASE_URL) {
+        // $url is now index.php if no element was found, the right url if found
+        header('location:'.$url);
+        exit();
+    }
 }
+if (empty($_GET['api'])) {
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -66,6 +69,7 @@ if (count($_GET) == 1) {
     <body>
         <h1><a href="index.php">It's too long…</a></h1>
 <?php
+}
 if(!empty($_POST['url'])) {
     if(!empty($_POST['short'])) {
         $short = htmlspecialchars($_POST['short']);
@@ -92,12 +96,19 @@ if(!empty($_POST['url'])) {
 
     // Echoes the result
     $new_url = BASE_URL.'/?'.$short;
+
+    if (empty($_GET['api'])) {
 ?>
                 <p>Your shortened URL:<br/>
                     <strong><a href="<?php echo $new_url ?>"><?php echo $new_url; ?></a></strong>
                 </p>
                 <p>Short link for: <?php echo '<a href="'.$url.'">'.$url.'</a>'; ?></p>
 <?php
+    }
+    else {
+        echo $new_url;
+        exit();
+    }
 }
 else {
     if (isset($_GET['add']) && !empty($_GET['url'])) {
@@ -122,7 +133,7 @@ else {
                 <label for="short">Shortcut (optional): </label><input type="short" size="50" name="short" id="short" value="<?php echo $default_short;?>"/>
             </p>
             <p><input type="submit" value="Shorten !"/></p>
-            <p>Add this link to your bookmarks to shorten links in one click ! 
+            <p>Add this link to your bookmarks to shorten links in one click !
                 <a href="javascript:javascript:(function(){var%20url%20=%20location.href;var%20title%20=%20document.title%20||%20url;window.open('<?php echo BASE_URL; ?>/?add&amp;url='%20+%20encodeURIComponent(url),'_blank','menubar=no,height=390,width=600,toolbar=no,scrollbars=no,status=no,dialog=1');})();">Short link</a>
             </p>
         </form>
